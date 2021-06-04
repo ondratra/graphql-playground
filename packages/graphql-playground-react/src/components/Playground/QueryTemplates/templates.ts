@@ -31,12 +31,20 @@ export const queryTemplates: IQueryTemplate[] = [
   },
 
   ...getOneGetAllTemplates('video category', 'video categories', 'videoCategories'),
+  {
+    title: `All videos in category`,
+    description: `Get all videos associated with the given video category.`,
+    query: `query {
+      ${descriptionMarker}
+      videos(where: { categoryId_eq: 1 }) { ${allPropsMarker} }
+    }`,
+  },
   ...getOneGetAllTemplates('channel', 'channels', 'channels'),
-  ...getOneGetAllTemplates('channel category', 'channels categorues', 'channelCategories'),
+  ...getOneGetAllTemplates('channel category', 'channels categories', 'channelCategories'),
 
   {
     title: `Channel's videos`,
-    description: `Get all videos from the given channel's name.`,
+    description: `Get all videos associated with the given channel.`,
     query: `query {
       ${descriptionMarker}
       videos(where: { channelId_eq: 1 }) { ${allPropsMarker} }
