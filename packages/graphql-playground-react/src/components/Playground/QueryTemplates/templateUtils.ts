@@ -7,8 +7,6 @@ export interface IQueryTemplate {
 
 // fields ignored in query props expansion
 const ignoredFields = [
-  'createdAt',
-  'updatedAt',
   'deletedAt',
   'createdById',
   'updatedById',
@@ -159,4 +157,23 @@ export const genericTemplates = {
       ${queryName}(where: { id_eq: 1 }) { ${allPropsMarker} }
     }`
   },
+}
+
+/*
+  Creates generic templates of getting one and getting all queries for the given query.
+*/
+export function getOneGetAllTemplates(titleSingular: string, titlePlural: string, queryName: string): IQueryTemplate[] {
+  return [
+    {
+      title: `All ${titleSingular}`,
+      description: `Get all existing ${titlePlural}.`,
+      query: genericTemplates.getAll(queryName),
+    }, {
+      title: `One ${titleSingular}`,
+      description: ''
+        + `Get one specific ${titleSingular}. \n`
+        + `Change \`id_eq\` value to select a ${titleSingular} by id or set a different lookup parameter.`,
+      query: genericTemplates.getOne(queryName),
+    }
+  ]
 }
