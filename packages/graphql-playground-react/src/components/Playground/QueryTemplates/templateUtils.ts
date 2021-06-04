@@ -165,7 +165,7 @@ export const genericTemplates = {
 export function getOneGetAllTemplates(titleSingular: string, titlePlural: string, queryName: string): IQueryTemplate[] {
   return [
     {
-      title: `All ${titleSingular}`,
+      title: `All ${titlePlural}`,
       description: `Get all existing ${titlePlural}.`,
       query: genericTemplates.getAll(queryName),
     }, {

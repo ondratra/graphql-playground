@@ -39,7 +39,7 @@ export const queryTemplates: IQueryTemplate[] = [
     description: `Get all videos from the given channel's name.`,
     query: `query {
       ${descriptionMarker}
-      videos(where: { channel_: 1 }) { ${allPropsMarker} }
+      videos(where: { channelId_eq: 1 }) { ${allPropsMarker} }
     }`,
   },
 
