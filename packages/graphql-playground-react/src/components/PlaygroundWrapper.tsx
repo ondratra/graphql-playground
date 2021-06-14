@@ -26,6 +26,7 @@ import { Session, Tab } from '../state/sessions/reducers'
 import { ApolloLink } from 'apollo-link'
 import { injectTabs } from '../state/workspace/actions'
 import { buildSchema, buildClientSchema, GraphQLSchema } from 'graphql'
+import { IQueryTemplate } from './Playground/QueryTemplates/templateUtils'
 
 function getParameterByName(name: string, uri?: string): string | null {
   const url = uri || window.location.href
@@ -68,6 +69,7 @@ export interface PlaygroundWrapperProps {
   codeTheme?: EditorColours
   workspaceName?: string
   headers?: any
+  queryTemplates?: IQueryTemplate[]
 }
 
 export interface ReduxProps {
@@ -402,6 +404,7 @@ class PlaygroundWrapper extends React.Component<
               }
               createApolloLink={this.props.createApolloLink}
               schema={this.state.schema}
+              queryTemplates={this.props.queryTemplates}
             />
           </App>
         </ThemeProvider>

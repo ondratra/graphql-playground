@@ -51,6 +51,7 @@ import { getSettings, getSettingsString } from '../state/workspace/reducers'
 import { Backoff } from './Playground/util/fibonacci-backoff'
 import { debounce } from 'lodash'
 import { cachedPrintSchema } from './util'
+import { IQueryTemplate } from './Playground/QueryTemplates/templateUtils'
 
 export interface Response {
   resultID: string
@@ -92,6 +93,7 @@ export interface Props {
   ) => ApolloLink
   workspaceName?: string
   schema?: GraphQLSchema
+  queryTemplates: IQueryTemplate[]
 }
 
 export interface ReduxProps {
@@ -329,6 +331,7 @@ export class Playground extends React.PureComponent<Props & ReduxProps, State> {
                 shareEnabled={this.props.shareEnabled}
                 fixedEndpoint={this.props.fixedEndpoint}
                 schema={this.state.schema}
+                queryTemplates={this.props.queryTemplates}
               />
             )}
           </GraphiqlWrapper>

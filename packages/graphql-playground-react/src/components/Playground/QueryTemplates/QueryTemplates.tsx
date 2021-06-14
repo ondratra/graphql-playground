@@ -2,13 +2,13 @@ import * as React from 'react'
 import { serializeRoot } from '../util/stack'
 import { columnWidth } from '../../../constants'
 import { editQuery } from '../../../state/sessions/actions'
-import { queryTemplates } from './templates'
-import { fillDescriptionToQuery, fillPropsToQuery } from './templateUtils'
+import { fillDescriptionToQuery, fillPropsToQuery, IQueryTemplate } from './templateUtils'
 import { connect } from 'react-redux'
 import { SideTabContentProps } from '../ExplorerTabs/SideTabs'
 import { styled } from '../../../styled'
 
 export interface Props {
+  queryTemplates?: IQueryTemplate[]
   schema: any
 }
 
@@ -19,11 +19,6 @@ export interface ReduxProps {
 export interface State {
   includeRelations: boolean
 }
-
-/*
-// export default class QueryTemplates extends React.PureComponent<Props, {}> {
-export class QueryTemplates extends React.PureComponent<Props & ReduxProps, {}> {
-*/
 
 class QueryTemplates extends React.Component<
   Props & ReduxProps & SideTabContentProps,
@@ -47,6 +42,11 @@ class QueryTemplates extends React.Component<
     const { schema } = this.props
 
     const structuredSchema = serializeRoot(schema)
+
+    const queryTemplates = this.props.queryTemplates || []
+
+// tslint:disable-next-line:no-console
+console.log('here is props', this.props)
 
 // tslint:disable-next-line:no-console
 console.log(queryTemplates)
@@ -120,13 +120,8 @@ console.log(structuredSchema)
   }
 }
 
-import { createStructuredSelector } from 'reselect'
-const mapStateToProps = createStructuredSelector({
-  // no state mapping needed
-})
-
 export default connect(
-  mapStateToProps,
+  null,
   { onChange: editQuery },
 )(QueryTemplates)
 

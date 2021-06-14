@@ -177,3 +177,11 @@ export function getOneGetAllTemplates(titleSingular: string, titlePlural: string
     }
   ]
 }
+
+export const queryTemplateUtils = {
+  allPropsMarker,
+  descriptionMarker,
+  formatQuery,
+  genericTemplates,
+  getOneGetAllTemplates,
+}
