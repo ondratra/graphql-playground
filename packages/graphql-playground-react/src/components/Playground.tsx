@@ -93,7 +93,7 @@ export interface Props {
   ) => ApolloLink
   workspaceName?: string
   schema?: GraphQLSchema
-  queryTemplates: IQueryTemplate[]
+  queryTemplates?: IQueryTemplate[]
 }
 
 export interface ReduxProps {

@@ -8,7 +8,7 @@ import { SideTabContentProps } from '../ExplorerTabs/SideTabs'
 import { styled } from '../../../styled'
 
 export interface Props {
-  queryTemplates?: IQueryTemplate[]
+  queryTemplates: IQueryTemplate[]
   schema: any
 }
 
@@ -43,23 +43,13 @@ class QueryTemplates extends React.Component<
 
     const structuredSchema = serializeRoot(schema)
 
-    const queryTemplates = this.props.queryTemplates || []
-
-// tslint:disable-next-line:no-console
-console.log('here is props', this.props)
-
-// tslint:disable-next-line:no-console
-console.log(queryTemplates)
-// tslint:disable-next-line:no-console
-console.log(structuredSchema)
-
     // create query from template and pass it to editor
     const onSetQuery = (index: number) => {
       const maxQueryRecursion = this.state.includeRelations
         ? this.maxQueryRecursion
         : 0
-      const queryWithProps = fillPropsToQuery(structuredSchema, queryTemplates[index].query, maxQueryRecursion)
-      const queryWithDescription = fillDescriptionToQuery(queryWithProps, queryTemplates[index].description)
+      const queryWithProps = fillPropsToQuery(structuredSchema, this.props.queryTemplates[index].query, maxQueryRecursion)
+      const queryWithDescription = fillDescriptionToQuery(queryWithProps, this.props.queryTemplates[index].description)
       this.props.onChange(queryWithDescription)
     }
 
@@ -85,9 +75,9 @@ console.log(structuredSchema)
     }
 
     // create list and selectbox items
-    const templateSelectOptions = queryTemplates.map(({title}, key) => <option key={key} value={key}>{title}</option>)
+    const templateSelectOptions = this.props.queryTemplates.map(({title}, key) => <option key={key} value={key}>{title}</option>)
     // tslint:disable-next-line:jsx-no-lambda
-    const templateListItems = queryTemplates.map(({title}, key) => <TemplateListItem key={key} onClick={() => onSetQuery(key)}>{title}</TemplateListItem>)
+    const templateListItems = this.props.queryTemplates.map(({title}, key) => <TemplateListItem key={key} onClick={() => onSetQuery(key)}>{title}</TemplateListItem>)
 
     return (
       <TemplatesContainer>
