@@ -8,6 +8,8 @@ export default PlaygroundWrapper
 
 export { store }
 
+export { queryTemplateUtils, IQueryTemplate } from './components/Playground/QueryTemplates/templateUtils'
+
 export * from './state/sessions/actions'
 export * from './state/sessions/selectors'
 

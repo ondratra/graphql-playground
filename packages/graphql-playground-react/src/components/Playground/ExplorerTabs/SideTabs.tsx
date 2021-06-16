@@ -99,15 +99,16 @@ class SideTabs extends React.Component<
   render() {
     const { docsOpen, docsWidth, activeTabIdx } = this.props.docs
     const docsStyle = { width: docsOpen ? docsWidth : 0 }
+    const cleanChildren = this.props.children.filter(child => child) // filter out children that are `null`
     const activeTab =
       docsOpen &&
-      (React.Children.toArray(this.props.children)[
+      (React.Children.toArray(cleanChildren)[
         activeTabIdx
       ] as React.ReactElement<any>)
     return (
       <Tabs open={docsOpen} style={docsStyle} ref={this.setRef}>
         <TabsContainer>
-          {React.Children.toArray(this.props.children).map(
+          {React.Children.toArray(cleanChildren).map(
             (child: React.ReactElement<any>, index) => {
               return React.cloneElement(child, {
                 ...child.props,
