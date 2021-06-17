@@ -2,20 +2,9 @@
 export interface IQueryTemplate {
   title: string
   description: string
+  ignoredFields?: string[]
   query: string
 }
-
-// fields ignored in query props expansion
-const ignoredFields = [
-  'deletedAt',
-  'createdById',
-  'updatedById',
-  'deletedById',
-  'version',
-
-  // Joystream's dataObject `owner` is problematic because it's variant and will need some special handling
-  'owner',
-]
 
 // define markers that can be used in template queries
 export const allPropsMarker = '#allProps#'
@@ -39,14 +28,19 @@ export function formatQuery(template: IQueryTemplate): IQueryTemplate {
 /*
   Fills a list of properties to the given query.
 */
-export function fillPropsToQuery(schema: any, query: string, maxRelationRecursions: number): string {
+export function fillPropsToQuery(
+  schema: any,
+  query: string,
+  maxRelationRecursions: number,
+  ignoredFields: string[]
+): string {
   const usedQueryName = query
     .replace(allPropsMarker, '') // remove all markers
     .replace(descriptionMarker, '') // remove all markers
     .match(/query *\{[\s]*([a-zA-z]+)/)[1]
 
   const schemaQuery = schema.queries.find(item => item.name === usedQueryName)
-  const concatedProps = concatQueryProps(schemaQuery, maxRelationRecursions)
+  const concatedProps = concatQueryProps(schemaQuery, maxRelationRecursions, ignoredFields)
 
   const result = query.replace(allPropsMarker, concatedProps)
 
@@ -67,9 +61,9 @@ export function fillDescriptionToQuery(query: string, description: string): stri
 /*
   Prepares a list of properties for the given query.
 */
-function concatQueryProps(schemaPart: any, maxRelationRecursions: number, objsSoFar = []): string {
+function concatQueryProps(schemaPart: any, maxRelationRecursions: number, ignoredFields: string[]): string {
   const subType = findQuerySubType(schemaPart.type)
-  const tmpResult = queryPropsTypeRecursion(subType, maxRelationRecursions)
+  const tmpResult = queryPropsTypeRecursion(subType, maxRelationRecursions, ignoredFields)
 
   const result = tmpResult
 
@@ -79,7 +73,12 @@ function concatQueryProps(schemaPart: any, maxRelationRecursions: number, objsSo
 /*
   Recursively walks through query properties and it's relations.
 */
-function queryPropsTypeRecursion(subType, remainingRecursion: number, objsSoFar = []): string {
+function queryPropsTypeRecursion(
+  subType: Record<string, any>,
+  remainingRecursion: number,
+  ignoredFields: string[],
+  objsSoFar = []
+): string {
   const fields = subType._fields
 
   const concatedProps = Object.entries(fields).reduce((acc, [key, value]: [string, {name: string, type: any}]) => {
@@ -109,7 +108,12 @@ function queryPropsTypeRecursion(subType, remainingRecursion: number, objsSoFar 
 
     // in case of relation expand object properties
     if (innerType._fields) {
-      const innerContent = queryPropsTypeRecursion(innerType, remainingRecursion - 1, [...objsSoFar, subType])
+      const innerContent = queryPropsTypeRecursion(
+        innerType,
+        remainingRecursion - 1,
+        ignoredFields,
+        [...objsSoFar, subType]
+      )
       return acc + `${tmpIndent}${value.name} {${innerContent}${tmpIndent}},\n`
     }
 
@@ -162,17 +166,24 @@ export const genericTemplates = {
 /*
   Creates generic templates of getting one and getting all queries for the given query.
 */
-export function getOneGetAllTemplates(titleSingular: string, titlePlural: string, queryName: string): IQueryTemplate[] {
+export function getOneGetAllTemplates(
+  titleSingular: string,
+  titlePlural: string,
+  queryName: string,
+  ignoredFields?: string[],
+): IQueryTemplate[] {
   return [
     {
       title: `All ${titlePlural}`,
       description: `Get all existing ${titlePlural}.`,
+      ignoredFields,
       query: genericTemplates.getAll(queryName),
     }, {
       title: `One ${titleSingular}`,
       description: ''
         + `Get one specific ${titleSingular}. \n`
         + `Change \`id_eq\` value to select a ${titleSingular} by id or set a different lookup parameter.`,
+      ignoredFields,
       query: genericTemplates.getOne(queryName),
     }
   ]

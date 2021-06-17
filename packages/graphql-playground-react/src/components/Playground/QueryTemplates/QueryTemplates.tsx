@@ -48,7 +48,14 @@ class QueryTemplates extends React.Component<
       const maxQueryRecursion = this.state.includeRelations
         ? this.maxQueryRecursion
         : 0
-      const queryWithProps = fillPropsToQuery(structuredSchema, this.props.queryTemplates[index].query, maxQueryRecursion)
+      const queryTemplate = this.props.queryTemplates[index]
+
+      const queryWithProps = fillPropsToQuery(
+        structuredSchema,
+        queryTemplate.query,
+        maxQueryRecursion,
+        queryTemplate.ignoredFields || [],
+      )
       const queryWithDescription = fillDescriptionToQuery(queryWithProps, this.props.queryTemplates[index].description)
       this.props.onChange(queryWithDescription)
     }
