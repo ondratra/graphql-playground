@@ -24,6 +24,7 @@ import { openHistory } from '../../../state/general/actions'
 import { getSettings } from '../../../state/workspace/reducers'
 import { Session } from '../../../state/sessions/reducers'
 import { ISettings } from '../../../types'
+import { setSubscriptionEndpoint } from '../../../state/sessions/fetchingSagas'
 
 export interface Props {
   endpoint: string
@@ -103,6 +104,9 @@ class TopBar extends React.Component<Props, {}> {
   }
   onChange = e => {
     this.props.editEndpoint(e.target.value)
+
+    // NOTE: primitive way to make GraphQL subscriptions work after changing endpoint in tab's URL editor
+    setSubscriptionEndpoint(e.target.value.replace(/^http(s)?/, 'ws$1'))
   }
   onKeyDown = e => {
     if (e.keyCode === 13) {
