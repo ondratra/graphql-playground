@@ -94,6 +94,11 @@ function queryPropsTypeRecursion(
       return acc + tmpIndent + value.name + ",\n"
     }
 
+    // show only typename for enums
+    if (isEnum(value.type)) {
+      return acc + tmpIndent + value.name + " { __typename },\n"
+    }
+
     const innerType = findQuerySubType(value.type)
 
     // ensure infinite recursion between relations is prevented
@@ -142,6 +147,10 @@ function findQuerySubType(schemaPart: any): Record<string, any> {
   }
 
   return tmp
+}
+
+function isEnum(schemaPart: any): boolean {
+  return !!schemaPart.ofType?._types || !!schemaPart._types
 }
 
 // functions for generatic generic query templates
